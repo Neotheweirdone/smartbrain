@@ -3,6 +3,7 @@ import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 import Navigation from './Components/Navigation/Navigation';
 import Signin from './Components/Signin/Signin';
+import Register from './Components/Register/Register';
 import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Logo from './Components/Logo/Logo';
 import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm';
@@ -36,6 +37,8 @@ class App extends Component {
       input:'',
       imageUrl:'',
       box:{},
+      route:'signin',
+      isSignedin:false
     }
   }
 
@@ -74,20 +77,40 @@ class App extends Component {
       console.log(this.state);
     
 }
+
+onRouteChange=(route)=>{
+  if(route==='signout'){
+    this.setState({isSignedin:false})
+  }else if(route==='home'){
+    this.setState({isSignedin:true})
+  }
+  this.setState({route:route});
+
+}
+
   render() {
     return (
       <div className="App">
        <Particles className='particles' 
-              params={particlesOptions}/>
-        <Navigation />
-        <signin />
-        <Logo />
-        <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}  />
+          params={particlesOptions}/>
+        <Navigation isSignedin={this.state.isSignedin} onRouteChange={this.onRouteChange}/>
+      { this.state.route==='home'
+          ?<div>
+              <Logo />
+              <Rank />
+              <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
+              <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}  />
+            </div>
+          :(
+            this.state.route==='signin'
+          ?<Signin onRouteChange={this.onRouteChange}/>
+          :<Register onRouteChange={this.onRouteChange}/>
+            )
+      }
       </div>
     );
   }
 }
 
 export default App;
+///to change from JSX to Javascript just add {}
